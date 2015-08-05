@@ -1,3 +1,7 @@
+module Transducers
+
+export take, tmap, tfilter, transduce, tpush!
+
 type Reduced
   val
 end
@@ -38,6 +42,10 @@ function tpush!(r, x)
   push!(r, x)
 end
 
+"""
+Transduce entry point - reduce collection into start using
+reducing function f, applying xform with each step.
+"""
 function transduce(xform, f, start)
   transduce(xform, f, f(), start)
 end
@@ -82,4 +90,7 @@ function take(n::Int)
     _take_step
   end
   _take_xducer
+end
+
+# module end
 end
