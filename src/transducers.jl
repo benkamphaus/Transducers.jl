@@ -1,6 +1,6 @@
 module Transducers
 
-export take, tmap, tfilter, transduce, tpush!
+export take, tmap, tfilter, partition_all, transduce, tpush!
 
 type Reduced
   val
@@ -12,6 +12,14 @@ end
 
 function ensure_reduced(x)
   Reduced(x)
+end
+
+function unreduced(x::Reduced)
+  x.val
+end
+
+function unreduced(x)
+  x
 end
 
 function treduce(fn, iterable, initializer=None)
@@ -90,6 +98,38 @@ function take(n::Int)
     _take_step
   end
   _take_xducer
+end
+
+function partition_all(n::Int)
+  function _partition_all_xducer(step)
+    temp = Any[]
+    _partition_all_step() = step()
+
+    function _partition_all_step(r)
+      if size(temp)[1] == 0
+        r
+      else
+        _temp = temp[:] #benchmark vs. copy?
+        empty!(temp)
+        _r =  unreduced(step(r, _temp))
+        step(_r)
+      end
+    end
+
+    function _partition_all_step(r, x)
+      push!(temp, x)
+      if size(temp)[1] == n
+        _temp = temp[:]
+        empty!(temp)
+        step(r, _temp)
+      else
+        r
+      end
+    end
+
+    _partition_all_step
+  end
+  _partition_all_xducer
 end
 
 # module end
