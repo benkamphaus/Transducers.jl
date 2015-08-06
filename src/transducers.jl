@@ -1,6 +1,7 @@
 module Transducers
 
-export take, tmap, tfilter, partition_all, random_sample, transduce, tpush!
+export take, tmap, tfilter, partition_all, random_sample, transduce,
+       dedupe, tpush!
 
 type Reduced
   val
@@ -130,6 +131,25 @@ function partition_all(n::Int)
     _partition_all_step
   end
   _partition_all_xducer
+end
+
+
+function dedupe(step)
+  prev = None
+  _dedupe_step() = step()
+  _dedupe_step(r) = step(r)
+  function _dedupe_step(r, x)
+    if prev == None
+      prev = x
+      step(r, x)
+    elseif x != prev
+      prev = x
+      step(r, x)
+    else
+      r
+    end
+  end
+  _dedupe_step
 end
 
 function random_sample(prob::FloatingPoint)
