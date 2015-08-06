@@ -1,7 +1,7 @@
 module Transducers
 
 export take, tmap, tfilter, partition_all, random_sample, transduce,
-       dedupe, tpush!
+       dedupe, replace, tpush!
 
 type Reduced
   val
@@ -133,6 +133,15 @@ function partition_all(n::Int)
   _partition_all_xducer
 end
 
+function replace(smap::Dict{Any,Any})
+  function _replace_xducer(step)
+    _replace_step() = step()
+    _replace_step(r) = step(r)
+    _replace_step(r, x) = haskey(smap, x) ? step(r, smap[x]) : step(r, x)
+    _replace_step
+  end
+  _replace_xducer
+end
 
 function dedupe(step)
   prev = None
