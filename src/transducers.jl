@@ -1,7 +1,7 @@
 module Transducers
 
-export take, tmap, tfilter, partition_all, random_sample, transduce,
-       dedupe, replace, tpush!
+export ttake, tmap, tfilter, partition_all, random_sample, transduce,
+       dedupe, treplace, tpush!
 
 type Reduced
   val
@@ -85,7 +85,7 @@ function tfilter(pred)
   _filter_xducer
 end
 
-function take(n::Int)
+function ttake(n::Int)
   function _take_xducer(step)
     counter = n
     _take_step() = step()
@@ -133,7 +133,7 @@ function partition_all(n::Int)
   _partition_all_xducer
 end
 
-function replace(smap::Dict{Any,Any})
+function treplace(smap::Dict{Any,Any})
   function _replace_xducer(step)
     _replace_step() = step()
     _replace_step(r) = step(r)
