@@ -2,7 +2,7 @@
 Port of Rich Hickey's Transducers to Julia - WIP
 
 # Copyright and License
-Copyright © 2016 Russ Olsen
+Copyright © 2016 Ben Kamphaus
 
 This library is a port of the Python transducers library licensed as:
 
